@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #111;
+      color: white;
+    }
+    #reader {
+      width: 300px;
+      margin: auto;
+      margin-top: 20px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      color: lightgreen;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Scan Your Code</h2>
+
+<button onclick="startScanner()">Start Scanning</button>
+
+<div id="reader"></div>
+
+<div id="result">Waiting for scan...</div>
+
+<script>
+  function startScanner() {
+    const html5QrCode = new Html5Qrcode("reader");
+
+    Html5Qrcode.getCameras().then(devices => {
+      if (devices && devices.length) {
+        let cameraId = devices[0].id;
+
+        html5QrCode.start(
+          cameraId,
+          {
+            fps: 10,
+            qrbox: 250
+          },
+          (decodedText) => {
+            console.log("Scanned:", decodedText);
+
+            // 🔥 YOUR MAIN LOGIC HERE
+            if (decodedText === "2J3G") {
+              document.getElementById("result").innerText =
+                "🔥 DO 300 JUMPING JACKS EVERY DAY 🔥";
+
+              html5QrCode.stop(); // stop after correct scan
+            } else {
+              document.getElementById("result").innerText =
+                "❌ Unknown code: " + decodedText;
+            }
+          },
+          (errorMessage) => {
+            // ignore scan errors
+          }
+        );
+      }
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+</script>
+
+</body>
+</html>
